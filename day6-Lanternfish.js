@@ -5,18 +5,32 @@ let input = fs
   .map((x) => Number(x));
 
 const endDay = 256;
-const fishes = [];
+let fishes = [];
+const x = {};
 for (fish of input) {
-  fishes.push(fish - 6);
+  if (!x[String(fish - 6)]) {
+    fishes.push(fish - 6);
+    x[String(fish - 6)] = 1;
+  } else {
+    x[String(fish - 6)] += 1;
+  }
 }
-let fishCount = fishes.length;
+let fishCount = input.length;
+fishes = fishes.sort((a, b) => a - b);
 
 while (fishes.length > 0) {
   const fish = fishes.shift();
+  const mul = x[String(fish)];
   for (let day = fish; day <= endDay; day += 7) {
     if (day == fish) continue;
-    ++fishCount;
-    fishes.push(day + 2);
+    fishCount += mul;
+    if (!x[String(day + 2)]) {
+      fishes.push(day + 2);
+      x[String(day + 2)] = mul;
+      fishes = fishes.sort((a, b) => a - b);
+    } else {
+      x[String(day + 2)] += mul;
+    }
   }
 }
 
